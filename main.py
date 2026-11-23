@@ -48,7 +48,26 @@ ENTRY = (
 )
 
 
+def validate_entry(entry: str) -> str:
+    """Validate the final entry before it is written.
+
+    A one-line entry must be a real sentence, not blank, and short enough
+    to stand alone on a bounty card (1-240 characters). Any violation is
+    a programming error, so fail loudly instead of writing bad output.
+    """
+    if not isinstance(entry, str):
+        raise ValueError("entry must be a string")
+    if not entry.strip():
+        raise ValueError("entry must not be blank or whitespace-only")
+    if len(entry) < 1 or len(entry) > 240:
+        raise ValueError(
+            f"entry must be 1-240 characters, got {len(entry)}"
+        )
+    return entry
+
+
 def main() -> None:
+    validate_entry(ENTRY)
     out_dir = os.environ.get("MAKEFUN_OUTPUT_DIR") or "/output"
     os.makedirs(out_dir, exist_ok=True)
     path = os.path.join(out_dir, "entry.txt")
